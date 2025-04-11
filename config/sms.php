@@ -37,6 +37,10 @@ return [
     //'api_key' => env('SMS_API_KEY'),
     //'api_secret' => env('SMS_API_SECRET'),
 
+    // rakuten
+    //'api_key' => env('SMS_API_KEY'),
+    //'api_endpoint' =>env('SMS_API_ENDPOINT')
+
     /*
      * If the sms package should log actions to the info log'
      */

@@ -6,6 +6,7 @@ use AnSms\Gateway\GatewayInterface;
 use AnSms\Gateway\NullGateway;
 use AnSms\Gateway\CellsyntGateway;
 use AnSms\Gateway\FortySixElksGateway;
+use AnSms\Gateway\RakutenGateway;
 use AnSms\Gateway\TelenorGateway;
 use AnSms\Gateway\TwilioGateway;
 use AnSms\Gateway\VonageGateway;
@@ -100,6 +101,15 @@ class ServiceProvider extends BaseServiceProvider
                 $app['config']['sms.api_secret'],
                 $app->has(VonageClient::class) ? $app->make(VonageClient::class) : null,
             ),
+
+            'rakuten' => new RakutenGateway(
+                $app['config']['sms.api_key'],
+                $app['config']['sms.api_endpoint'],
+                $httpClient,
+                $requestFactory,
+                $streamFactory
+            ),
+
             default => throw new \InvalidArgumentException("Unknown sms gateway \"{$gatewayName}\""),
         };
     }
