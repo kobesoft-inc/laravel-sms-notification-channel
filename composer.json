@@ -1,7 +1,7 @@
 {
-    "name": "andreasnij/laravel-sms-notification-channel",
+    "name": "kobesoft/laravel-sms-notification-channel",
     "type": "library",
-    "description": "An SMS notification channel for the PHP framework Laravel.",
+    "description": "Added RAKUTEN gateway in andreasnij's SMS notification channel for the PHP framework Laravel.",
     "keywords": [
         "sms",
         "laravel",
@@ -9,13 +9,14 @@
         "46elks",
         "cellsynt",
         "twilio",
-        "vonage"
+        "vonage",
+        "rakuten"
     ],
-    "homepage": "http://github.com/andreasnij/laravel-sms-notification-channel",
+    "homepage": "http://github.com/kobesoft/laravel-sms-notification-channel",
     "license": "MIT",
     "authors": [
         {
-            "name": "Andreas Nilsson"
+            "name": "kobesoft"
         }
     ],
     "require": {
