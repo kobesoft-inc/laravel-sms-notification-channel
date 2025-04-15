@@ -1,6 +1,6 @@
 <?php
 
-namespace AnSms;
+namespace LaravelSmsNotificationChannel;
 
 use AnSmS\Gateway\GatewayInterface;
 use AnSmS\Gateway\NullGateway;

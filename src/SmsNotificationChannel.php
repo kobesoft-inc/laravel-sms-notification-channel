@@ -1,6 +1,6 @@
 <?php
 
-namespace AnSms;
+namespace LaravelSmsNotificationChannel;
 
 use AnSms\Exception\SendException;
 use AnSms\Message\Message;
