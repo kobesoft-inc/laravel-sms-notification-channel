@@ -37,7 +37,7 @@
     },
     "autoload": {
         "psr-4": {
-            "LaravelSmsNotificationChannel\\": "kobesoft/laravel-sms-notification-channel/src/"
+            "LaravelSmsNotificationChannel\\": "src/"
         }
     },
     "autoload-dev": {
