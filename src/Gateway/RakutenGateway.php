@@ -3,11 +3,13 @@
 namespace LaravelSmsNotificationChannel\Gateway;
 
 use AnSms\SmsTransceiverInterface;
+use AnSms\Message\Address\AddressInterface;
 use AnSms\Message\MessageInterface;
 use AnSms\Message\Message;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
 
 class RakutenGateway implements SmsTransceiverInterface
 {
@@ -71,11 +73,17 @@ class RakutenGateway implements SmsTransceiverInterface
         return $status;
     }
 
-    public function setDefaultFrom(string $from): void
-    {
-        $this->from = $from;
-    }
 
+    public function setDefaultFrom(AddressInterface|string|null $defaultFrom): void
+    {
+        if ($defaultFrom === null) {
+            $this->from = null;
+        } elseif ($defaultFrom instanceof AddressInterface) {
+            $this->from = $defaultFrom->getAddress();
+        } else {
+            $this->from = $defaultFrom;
+        }
+    }
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
