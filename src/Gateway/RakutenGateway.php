@@ -18,18 +18,15 @@ class RakutenGateway implements GatewayInterface
     protected string $endpoint;
     protected string $from;
 
-    public function __construct(
-        string $apiKey,
-        string $endpoint,
-        string $from
-    ) {
-        if (empty($apiKey) || empty($endpoint) || empty($from)) {
+    public function __construct()
+    {
+        $this->apiKey = config('sms.rakuten.api_key');
+        $this->endpoint = config('sms.rakuten.api_endpoint');
+        $this->from = config('sms.rakuten.from');
+
+        if (empty($this->apiKey) || empty($this->endpoint) || empty($this->from)) {
             throw new InvalidArgumentException('API Key, Endpoint, and From are required');
         }
-
-        $this->apiKey = $apiKey;
-        $this->endpoint = $endpoint;
-        $this->from = $from;
     }
 
     /**
@@ -38,7 +35,6 @@ class RakutenGateway implements GatewayInterface
     public function sendMessage(MessageInterface $message): void
     {
         try {
-            // 라쿠텐 SMS API로 HTTP POST 요청
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
             ])->post($this->endpoint, [
@@ -49,7 +45,6 @@ class RakutenGateway implements GatewayInterface
 
             $responseData = $response->json();
 
-            // 라쿠텐 API의 성공적인 응답을 확인
             if (isset($responseData['status']) && $responseData['status'] === 'success') {
                 $message->setId($responseData['message_id']);
             } else {
