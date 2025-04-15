@@ -34,15 +34,17 @@ class RakutenGateway implements SmsTransceiverInterface
         $this->streamFactory = $streamFactory;
     }
 
-    public function sendMessage(MessageInterface $message): void
+
+    public function sendMessages(array $messages): void
     {
-        if (!$message instanceof Message) {
-            throw new \InvalidArgumentException('Expected instance of ' . Message::class);
+        foreach ($messages as $message) {
+            if (!$message instanceof MessageInterface) {
+                throw new \InvalidArgumentException('Expected instance of MessageInterface');
+            }
+
+            $this->sendMessage($message);
         }
-
-        $this->sendSingleMessage($message);
     }
-
     public function receiveMessage(array $data): MessageInterface
     {
         $message = new Message(
