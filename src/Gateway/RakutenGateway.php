@@ -2,126 +2,111 @@
 
 namespace LaravelSmsNotificationChannel\Gateway;
 
-use AnSms\SmsTransceiverInterface;
-use AnSms\Message\Address\AddressInterface;
-use AnSms\Message\MessageInterface;
-use AnSms\Message\Message;
-use AnSms\Message\DeliveryReport\DeliveryReportInterface;
-use AnSms\Message\DeliveryReport\GenericDeliveryReport;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Log\LoggerInterface;
 
-class RakutenGateway implements SmsTransceiverInterface
+use AnSms\Exception\ReceiveException;
+use AnSms\Exception\SendException;
+use AnSms\Message\DeliveryReport\DeliveryReport;
+use AnSms\Message\DeliveryReport\DeliveryReportInterface;
+use AnSms\Message\Message;
+use AnSms\Message\MessageInterface;
+use Illuminate\Support\Facades\Http;
+use InvalidArgumentException;
+
+class RakutenGateway implements GatewayInterface
 {
     protected string $apiKey;
     protected string $endpoint;
     protected string $from;
-    protected ?ClientInterface $http;
-    protected ?RequestFactoryInterface $requestFactory;
-    protected ?StreamFactoryInterface $streamFactory;
 
     public function __construct(
-        ClientInterface $http = null,
-        RequestFactoryInterface $requestFactory = null,
-        StreamFactoryInterface $streamFactory = null
+        string $apiKey,
+        string $endpoint,
+        string $from
     ) {
-        $this->apiKey = config('services.rakuten.api_key');
-        $this->endpoint = config('services.rakuten.api_endpoint');
-        $this->from = config('services.rakuten.from');
-
-        $this->http = $http;
-        $this->requestFactory = $requestFactory;
-        $this->streamFactory = $streamFactory;
-    }
-
-    /*send http request
-     *
-     */
-    public function send(string $to, string $message): void
-    {
-        if (!$this->http || !$this->requestFactory || !$this->streamFactory) {
-            throw new \RuntimeException('HTTP client, request factory, and stream factory are required.');
+        if (empty($apiKey) || empty($endpoint) || empty($from)) {
+            throw new InvalidArgumentException('API Key, Endpoint, and From are required');
         }
 
-        $body = json_encode([
-            'from'    => $this->from,
-            'to'      => $to,
-            'message' => $message,
-        ]);
-
-        $request = $this->requestFactory
-            ->createRequest('POST', $this->endpoint)
-            ->withHeader('Authorization', 'Bearer ' . $this->apiKey)
-            ->withHeader('Content-Type', 'application/json')
-            ->withBody($this->streamFactory->createStream($body));
-
-        $this->http->sendRequest($request);
+        $this->apiKey = $apiKey;
+        $this->endpoint = $endpoint;
+        $this->from = $from;
     }
 
+    /**
+     * @throws SendException
+     */
     public function sendMessage(MessageInterface $message): void
     {
         try {
-            $this->sendSingleMessage($message);
-        } catch (\Throwable $e) {
-            throw new SendException('Failed to send message', 0, $e);
+            // 라쿠텐 SMS API로 HTTP POST 요청
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+            ])->post($this->endpoint, [
+                'from' => $this->from,
+                'to' => $message->getTo(),
+                'message' => $message->getText(),
+            ]);
+
+            $responseData = $response->json();
+
+            // 라쿠텐 API의 성공적인 응답을 확인
+            if (isset($responseData['status']) && $responseData['status'] === 'success') {
+                $message->setId($responseData['message_id']);
+            } else {
+                throw new SendException('Failed to send SMS: ' . $responseData['error_message'] ?? 'Unknown error');
+            }
+
+        } catch (\Exception $e) {
+            throw new SendException('HTTP request failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
+    /**
+     * @param Message[] $messages
+     * @throws SendException
+     */
     public function sendMessages(array $messages): void
     {
         foreach ($messages as $message) {
-            if (!$message instanceof MessageInterface) {
-                throw new \InvalidArgumentException('Each message must implement MessageInterface');
-            }
-
             $this->sendMessage($message);
         }
     }
 
+    /**
+     * @throws ReceiveException
+     */
     public function receiveMessage(array $data): MessageInterface
     {
-        $message = new Message(
-            $data['recipient'],
-            $data['body']
+        if (empty($data['to']) || empty($data['body']) || empty($data['from']) || empty($data['message_id'])) {
+            throw new ReceiveException(sprintf(
+                'Invalid receive message data. Data received: %s',
+                var_export($data, true)
+            ));
+        }
+
+        $receivedMessage = Message::create(
+            $data['to'],
+            trim($data['body']),
+            $data['from']
         );
 
-        return $message;
+        $receivedMessage->setId($data['message_id']);
+
+        return $receivedMessage;
     }
 
+    /**
+     * @throws ReceiveException
+     */
     public function receiveDeliveryReport(array $data): DeliveryReportInterface
     {
-        return new GenericDeliveryReport(
-            $data['to'] ?? '',
-            $data['status'] ?? 'unknown',
-            $data['message_id'] ?? null
-        );
-    }
-
-    public function checkMessageStatus(array $data): MessageInterface
-    {
-        $status = new Message(
-            $data['recipient'],
-            $data['status']
-        );
-
-        return $status;
-    }
-
-
-    public function setDefaultFrom(AddressInterface|string|null $defaultFrom): void
-    {
-        if ($defaultFrom === null) {
-            $this->from = null;
-        } elseif ($defaultFrom instanceof AddressInterface) {
-            $this->from = $defaultFrom->getAddress();
-        } else {
-            $this->from = $defaultFrom;
+        if (empty($data['message_id']) || empty($data['status'])) {
+            throw new ReceiveException(sprintf(
+                'Invalid message delivery report data. Data received: %s',
+                var_export($data, true)
+            ));
         }
-    }
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
+
+        return new DeliveryReport($data['message_id'], $data['status']);
     }
 }
