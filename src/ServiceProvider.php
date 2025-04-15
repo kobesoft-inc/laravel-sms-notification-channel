@@ -105,6 +105,7 @@ class ServiceProvider extends BaseServiceProvider
             'rakuten' => new RakutenGateway(
                 $app['config']['sms.api_key'],
                 $app['config']['sms.api_endpoint'],
+                $app['config']['sms.from'],
                 $httpClient,
                 $requestFactory,
                 $streamFactory

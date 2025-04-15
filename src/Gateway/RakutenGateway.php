@@ -2,7 +2,7 @@
 
 namespace LaravelSmsNotificationChannel\Gateway;
 
-use AnSms\Gateway\GatewayInterface;
+use LaravelSmsNotificationChannel\Gateway\GatewayInterface;
 use AnSms\Exception\ReceiveException;
 use AnSms\Exception\SendException;
 use AnSms\Message\DeliveryReport\DeliveryReport;
@@ -18,11 +18,11 @@ class RakutenGateway implements GatewayInterface
     protected string $endpoint;
     protected string $from;
 
-    public function __construct()
+    public function __construct(string $apikey, string $endpoint, string $from)
     {
-        $this->apiKey = config('sms.rakuten.api_key');
-        $this->endpoint = config('sms.rakuten.api_endpoint');
-        $this->from = config('sms.rakuten.from');
+        $this->apiKey = $apikey;
+        $this->endpoint = $endpoint;
+        $this->from = $from;
 
         if (empty($this->apiKey) || empty($this->endpoint) || empty($this->from)) {
             throw new InvalidArgumentException('API Key, Endpoint, and From are required');
