@@ -1,6 +1,6 @@
 <?php
 
-namespace AnSms\Gateway;
+namespace LaravelSmsNotificationChannel\Gateway;
 
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;

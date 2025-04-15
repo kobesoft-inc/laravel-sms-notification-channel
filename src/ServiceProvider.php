@@ -2,14 +2,14 @@
 
 namespace LaravelSmsNotificationChannel;
 
-use AnSms\Gateway\GatewayInterface;
-use AnSms\Gateway\NullGateway;
-use AnSms\Gateway\CellsyntGateway;
-use AnSms\Gateway\FortySixElksGateway;
-use AnSms\Gateway\RakutenGateway;
-use AnSms\Gateway\TelenorGateway;
-use AnSms\Gateway\TwilioGateway;
-use AnSms\Gateway\VonageGateway;
+use LaravelSmsNotificationChannel\Gateway\GatewayInterface;
+use LaravelSmsNotificationChannel\Gateway\NullGateway;
+use LaravelSmsNotificationChannel\Gateway\CellsyntGateway;
+use LaravelSmsNotificationChannel\Gateway\FortySixElksGateway;
+use LaravelSmsNotificationChannel\Gateway\RakutenGateway;
+use LaravelSmsNotificationChannel\Gateway\TelenorGateway;
+use LaravelSmsNotificationChannel\Gateway\TwilioGateway;
+use LaravelSmsNotificationChannel\Gateway\VonageGateway;
 use AnSms\SmsTransceiver;
 use AnSms\SmsTransceiverInterface;
 use Illuminate\Contracts\Events\Dispatcher;
