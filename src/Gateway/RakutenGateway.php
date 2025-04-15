@@ -36,6 +36,30 @@ class RakutenGateway implements SmsTransceiverInterface
         $this->streamFactory = $streamFactory;
     }
 
+    /*send http request
+     *
+     */
+    public function send(string $to, string $message): void
+    {
+        if (!$this->http || !$this->requestFactory || !$this->streamFactory) {
+            throw new \RuntimeException('HTTP client, request factory, and stream factory are required.');
+        }
+
+        $body = json_encode([
+            'from'    => $this->from,
+            'to'      => $to,
+            'message' => $message,
+        ]);
+
+        $request = $this->requestFactory
+            ->createRequest('POST', $this->endpoint)
+            ->withHeader('Authorization', 'Bearer ' . $this->apiKey)
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody($this->streamFactory->createStream($body));
+
+        $this->http->sendRequest($request);
+    }
+
     public function sendMessage(MessageInterface $message): void
     {
         try {
