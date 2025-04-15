@@ -42,43 +42,32 @@ class RakutenGateway implements SmsTransceiverInterface
         }
     }
 
-    public function receiveMessage(): array
+    public function receiveMessage(array $data): MessageInterface
     {
-        $request = $this->requestFactory
-            ->createRequest('GET', $this->endpoint . '/receive')
-            ->withHeader('Authorization', 'Bearer ' . $this->apiKey);
+        $message = new Message(
+            $data['recipient'],
+            $data['body']
+        );
 
-        $response = $this->http->sendRequest($request);
-
-        $body = (string)$response->getBody();
-        $messages = json_decode($body, true);
-
-        return $messages;
-    }
-    public function receiveDeliveryReport(): array
-    {
-        $request = $this->requestFactory
-            ->createRequest('GET', $this->endpoint . '/delivery-report')
-            ->withHeader('Authorization', 'Bearer ' . $this->apiKey);
-
-        $response = $this->http->sendRequest($request);
-
-        $body = (string)$response->getBody();
-        $deliveryReports = json_decode($body, true);
-
-        return $deliveryReports;
+        return $message;
     }
 
-    public function checkMessageStatus(string $messageId): array
+    public function receiveDeliveryReport(array $data): MessageInterface
     {
-        $request = $this->requestFactory
-            ->createRequest('GET', $this->endpoint . '/status/' . $messageId)
-            ->withHeader('Authorization', 'Bearer ' . $this->apiKey);
+        $deliveryReport = new Message(
+            $data['recipient'],
+            $data['status']
+        );
 
-        $response = $this->http->sendRequest($request);
+        return $deliveryReport;
+    }
 
-        $body = (string)$response->getBody();
-        $status = json_decode($body, true);
+    public function checkMessageStatus(array $data): MessageInterface
+    {
+        $status = new Message(
+            $data['recipient'],
+            $data['status']
+        );
 
         return $status;
     }
