@@ -31,25 +31,15 @@ class RakutenGateway implements SmsTransceiverInterface
         $this->streamFactory = $streamFactory;
     }
 
-    public function sendMessages(Message $message): void
+    public function sendMessages(array $messages): void
     {
-        if (!$this->http || !$this->requestFactory || !$this->streamFactory) {
-            throw new \RuntimeException('HTTP client, request factory, and stream factory are required.');
+        foreach ($messages as $message) {
+            if (!$message instanceof Message) {
+                throw new \InvalidArgumentException('Expected instance of ' . Message::class);
+            }
+
+            $this->sendSingleMessage($message);
         }
-
-        $body = json_encode([
-            'from'    => $this->from,
-            'to'      => $message->getRecipient(),
-            'message' => $message->getBody(),
-        ]);
-
-        $request = $this->requestFactory
-            ->createRequest('POST', $this->endpoint)
-            ->withHeader('Authorization', 'Bearer ' . $this->apiKey)
-            ->withHeader('Content-Type', 'application/json')
-            ->withBody($this->streamFactory->createStream($body));
-
-        $this->http->sendRequest($request);
     }
 
     public function receiveMessage(): array
