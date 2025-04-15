@@ -1,11 +1,10 @@
 <?php
 
-namespace LaravelSmsNotificationChannel;
+namespace AnSms;
 
 use AnSms\Exception\SendException;
 use AnSms\Message\Message;
 use AnSms\Message\MessageInterface;
-use AnSms\SmsTransceiverInterface;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
 use InvalidArgumentException;

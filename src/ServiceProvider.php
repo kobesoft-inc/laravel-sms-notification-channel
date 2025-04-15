@@ -1,17 +1,15 @@
 <?php
 
-namespace LaravelSmsNotificationChannel;
+namespace AnSms;
 
-use LaravelSmsNotificationChannel\Gateway\GatewayInterface;
-use LaravelSmsNotificationChannel\Gateway\NullGateway;
-use LaravelSmsNotificationChannel\Gateway\CellsyntGateway;
-use LaravelSmsNotificationChannel\Gateway\FortySixElksGateway;
-use LaravelSmsNotificationChannel\Gateway\RakutenGateway;
-use LaravelSmsNotificationChannel\Gateway\TelenorGateway;
-use LaravelSmsNotificationChannel\Gateway\TwilioGateway;
-use LaravelSmsNotificationChannel\Gateway\VonageGateway;
-use AnSms\SmsTransceiver;
-use AnSms\SmsTransceiverInterface;
+use AnSmS\Gateway\GatewayInterface;
+use AnSmS\Gateway\NullGateway;
+use AnSmS\Gateway\CellsyntGateway;
+use AnSmS\Gateway\FortySixElksGateway;
+use AnSmS\Gateway\RakutenGateway;
+use AnSmS\Gateway\TelenorGateway;
+use AnSmS\Gateway\TwilioGateway;
+use AnSmS\Gateway\VonageGateway;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;

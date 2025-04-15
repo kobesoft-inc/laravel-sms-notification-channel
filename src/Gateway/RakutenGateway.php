@@ -1,8 +1,8 @@
 <?php
 
-namespace LaravelSmsNotificationChannel\Gateway;
+namespace AnSms\Gateway;
 
-use LaravelSmsNotificationChannel\Gateway\GatewayInterface;
+use AnSms\Gateway\GatewayInterface;
 use AnSms\Exception\ReceiveException;
 use AnSms\Exception\SendException;
 use AnSms\Message\DeliveryReport\DeliveryReport;
