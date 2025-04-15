@@ -6,7 +6,6 @@ use AnSmS\Gateway\GatewayInterface;
 use AnSmS\Gateway\NullGateway;
 use AnSmS\Gateway\CellsyntGateway;
 use AnSmS\Gateway\FortySixElksGateway;
-use AnSmS\Gateway\RakutenGateway;
 use AnSmS\Gateway\TelenorGateway;
 use AnSmS\Gateway\TwilioGateway;
 use AnSmS\Gateway\VonageGateway;
