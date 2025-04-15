@@ -1,12 +1,15 @@
 <?php
 
+
 namespace LaravelSmsNotificationChannel\Gateway;
 
+use AnSms\SmsTransceiverInterface;
+use AnSms\Message\Message;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 
-class RakutenGateway implements GatewayInterface
+class RakutenGateway implements SmsTransceiverInterface
 {
     protected string $apiKey;
     protected string $endpoint;
@@ -29,7 +32,13 @@ class RakutenGateway implements GatewayInterface
         $this->streamFactory = $streamFactory;
     }
 
-    public function send(string $to, string $message): void
+    /**
+     * send message
+     *
+     * @param Message $message
+     * @return void
+     */
+    public function sendMessage(Message $message): void
     {
         if (!$this->http || !$this->requestFactory || !$this->streamFactory) {
             throw new \RuntimeException('HTTP client, request factory, and stream factory are required.');
@@ -37,8 +46,8 @@ class RakutenGateway implements GatewayInterface
 
         $body = json_encode([
             'from'    => $this->from,
-            'to'      => $to,
-            'message' => $message,
+            'to'      => $message->getRecipient(),
+            'message' => $message->getBody(),
         ]);
 
         $request = $this->requestFactory
