@@ -6,6 +6,8 @@ use AnSms\SmsTransceiverInterface;
 use AnSms\Message\Address\AddressInterface;
 use AnSms\Message\MessageInterface;
 use AnSms\Message\Message;
+use AnSms\Message\DeliveryReport\DeliveryReportInterface;
+use AnSms\Message\DeliveryReport\GenericDeliveryReport;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -64,14 +66,13 @@ class RakutenGateway implements SmsTransceiverInterface
         return $message;
     }
 
-    public function receiveDeliveryReport(array $data): MessageInterface
+    public function receiveDeliveryReport(array $data): DeliveryReportInterface
     {
-        $deliveryReport = new Message(
-            $data['recipient'],
-            $data['status']
+        return new GenericDeliveryReport(
+            $data['to'] ?? '',
+            $data['status'] ?? 'unknown',
+            $data['message_id'] ?? null
         );
-
-        return $deliveryReport;
     }
 
     public function checkMessageStatus(array $data): MessageInterface
