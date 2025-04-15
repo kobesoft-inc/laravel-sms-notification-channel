@@ -3,6 +3,7 @@
 namespace LaravelSmsNotificationChannel\Gateway;
 
 use AnSms\SmsTransceiverInterface;
+use AnSms\Message\MessageInterface;
 use AnSms\Message\Message;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -31,15 +32,13 @@ class RakutenGateway implements SmsTransceiverInterface
         $this->streamFactory = $streamFactory;
     }
 
-    public function sendMessages(array $messages): void
+    public function sendMessage(MessageInterface $message): void
     {
-        foreach ($messages as $message) {
-            if (!$message instanceof Message) {
-                throw new \InvalidArgumentException('Expected instance of ' . Message::class);
-            }
-
-            $this->sendSingleMessage($message);
+        if (!$message instanceof Message) {
+            throw new \InvalidArgumentException('Expected instance of ' . Message::class);
         }
+
+        $this->sendSingleMessage($message);
     }
 
     public function receiveMessage(array $data): MessageInterface
@@ -70,5 +69,15 @@ class RakutenGateway implements SmsTransceiverInterface
         );
 
         return $status;
+    }
+
+    public function setDefaultFrom(string $from): void
+    {
+        $this->from = $from;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }
