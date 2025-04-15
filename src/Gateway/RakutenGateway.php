@@ -1,6 +1,5 @@
 <?php
 
-
 namespace LaravelSmsNotificationChannel\Gateway;
 
 use AnSms\SmsTransceiverInterface;
@@ -32,13 +31,7 @@ class RakutenGateway implements SmsTransceiverInterface
         $this->streamFactory = $streamFactory;
     }
 
-    /**
-     * send message
-     *
-     * @param Message $message
-     * @return void
-     */
-    public function sendMessage(Message $message): void
+    public function sendMessages(Message $message): void
     {
         if (!$this->http || !$this->requestFactory || !$this->streamFactory) {
             throw new \RuntimeException('HTTP client, request factory, and stream factory are required.');
@@ -57,5 +50,46 @@ class RakutenGateway implements SmsTransceiverInterface
             ->withBody($this->streamFactory->createStream($body));
 
         $this->http->sendRequest($request);
+    }
+
+    public function receiveMessage(): array
+    {
+        $request = $this->requestFactory
+            ->createRequest('GET', $this->endpoint . '/receive')
+            ->withHeader('Authorization', 'Bearer ' . $this->apiKey);
+
+        $response = $this->http->sendRequest($request);
+
+        $body = (string)$response->getBody();
+        $messages = json_decode($body, true);
+
+        return $messages;
+    }
+    public function receiveDeliveryReport(): array
+    {
+        $request = $this->requestFactory
+            ->createRequest('GET', $this->endpoint . '/delivery-report')
+            ->withHeader('Authorization', 'Bearer ' . $this->apiKey);
+
+        $response = $this->http->sendRequest($request);
+
+        $body = (string)$response->getBody();
+        $deliveryReports = json_decode($body, true);
+
+        return $deliveryReports;
+    }
+
+    public function checkMessageStatus(string $messageId): array
+    {
+        $request = $this->requestFactory
+            ->createRequest('GET', $this->endpoint . '/status/' . $messageId)
+            ->withHeader('Authorization', 'Bearer ' . $this->apiKey);
+
+        $response = $this->http->sendRequest($request);
+
+        $body = (string)$response->getBody();
+        $status = json_decode($body, true);
+
+        return $status;
     }
 }
