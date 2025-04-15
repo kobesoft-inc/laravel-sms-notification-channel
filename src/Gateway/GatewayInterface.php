@@ -7,7 +7,7 @@
  * @license   MIT
  */
 
-namespace AnSms\Gateway;
+namespace LaravelSmsNotificationChannel\Gateway;
 
 use AnSms\Exception\ReceiveException;
 use AnSms\Exception\SendException;
