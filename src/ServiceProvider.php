@@ -2,13 +2,15 @@
 
 namespace LaravelSmsNotificationChannel;
 
-use AnSmS\Gateway\GatewayInterface;
-use AnSmS\Gateway\NullGateway;
-use AnSmS\Gateway\CellsyntGateway;
-use AnSmS\Gateway\FortySixElksGateway;
-use AnSmS\Gateway\TelenorGateway;
-use AnSmS\Gateway\TwilioGateway;
-use AnSmS\Gateway\VonageGateway;
+use AnSms\Gateway\GatewayInterface;
+use AnSms\Gateway\NullGateway;
+use AnSms\Gateway\CellsyntGateway;
+use AnSms\Gateway\FortySixElksGateway;
+use AnSms\Gateway\TelenorGateway;
+use AnSms\Gateway\TwilioGateway;
+use AnSms\Gateway\VonageGateway;
+use AnSms\SmsTransceiver;
+use AnSms\SmsTransceiverInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
@@ -98,16 +100,6 @@ class ServiceProvider extends BaseServiceProvider
                 $app['config']['sms.api_secret'],
                 $app->has(VonageClient::class) ? $app->make(VonageClient::class) : null,
             ),
-
-            'rakuten' => new RakutenGateway(
-                $app['config']['sms.api_key'],
-                $app['config']['sms.api_endpoint'],
-                $app['config']['sms.from'],
-                $httpClient,
-                $requestFactory,
-                $streamFactory
-            ),
-
             default => throw new \InvalidArgumentException("Unknown sms gateway \"{$gatewayName}\""),
         };
     }
