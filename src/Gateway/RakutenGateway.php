@@ -5,7 +5,7 @@ namespace LaravelSmsNotificationChannel\Gateway;
 
 use AnSms\Message\Message;
 use AnSms\Message\MessageInterface;
-use AnSms\Gateway\GatewayInterface;
+use LaravelSmsNotificationChannel\Gateway\GatewayInterface;
 use Illuminate\Support\Facades\Http;
 
 class RakutenGateway implements GatewayInterface
