@@ -8,6 +8,7 @@
  */
 namespace LaravelSmsNotificationChannel\Gateway;
 
+use LaravelSmsNotificationChannel\Gateway\SmsTransceiverInterface;
 use AnSms\Exception\ReceiveException;
 use AnSms\Exception\SendException;
 use AnSms\Gateway\GatewayInterface;
