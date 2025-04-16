@@ -29,10 +29,12 @@ class RakutenGateway implements GatewayInterface
     public function sendMessage(MessageInterface $message): void
     {
         $token = $this->getAccessToken();
-
+        $from = preg_replace('/^\+?81/', '0', $message->getFrom());
+        $from = preg_replace('/[^0-9]/', '', $from);
+        $to = preg_replace('/[^0-9]/', '', $message->getTo());
         $payload = [
-            'from' => $message->getFrom(),
-            'to' => $message->getTo(),
+            'from' => $from,
+            'to' => $to,
             'message_type' => 'text',
             'text_message' => [
                 'text' => $message->getText(),
@@ -97,7 +99,7 @@ class RakutenGateway implements GatewayInterface
         $response = Http::withHeaders([
             'Authorization' => 'Basic ' . base64_encode("{$this->apiKey}:{$this->apiSecret}"),
             'Accept' => 'application/json',
-        ])->post($this->authUrl, [
+        ])->get($this->authUrl, [
             'grant_type' => 'client_credentials',
         ]);
 
