@@ -8,6 +8,7 @@ use AnSms\Message\MessageInterface;
 use LaravelSmsNotificationChannel\Gateway\GatewayInterface;
 use AnSms\Message\DeliveryReport\DeliveryReport;
 use AnSms\Message\DeliveryReport\DeliveryReportInterface;
+use AnSms\Exception\SendException;
 use Illuminate\Support\Facades\Http;
 
 class RakutenGateway implements GatewayInterface
