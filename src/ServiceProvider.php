@@ -9,6 +9,7 @@ use AnSms\Gateway\FortySixElksGateway;
 use AnSms\Gateway\TelenorGateway;
 use AnSms\Gateway\TwilioGateway;
 use AnSms\Gateway\VonageGateway;
+use LaravelSmsNotificationChannel\Gateway\RakutenGateway;
 use AnSms\SmsTransceiver;
 use AnSms\SmsTransceiverInterface;
 use Illuminate\Contracts\Events\Dispatcher;
