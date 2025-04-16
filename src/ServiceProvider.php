@@ -100,6 +100,10 @@ class ServiceProvider extends BaseServiceProvider
                 $app['config']['sms.api_secret'],
                 $app->has(VonageClient::class) ? $app->make(VonageClient::class) : null,
             ),
+            'rakuten' => new RakutenGateway(
+                $app['config']['sms.api_key'],
+                $app['config']['sms.api_secret'],
+            ),
             default => throw new \InvalidArgumentException("Unknown sms gateway \"{$gatewayName}\""),
         };
     }
