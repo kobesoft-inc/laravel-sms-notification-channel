@@ -2,7 +2,7 @@
 
 namespace LaravelSmsNotificationChannel;
 
-use AnSms\Gateway\GatewayInterface;
+use LaravelSmsNotificationChannel\Gateway\GatewayInterface;
 use AnSms\Gateway\NullGateway;
 use AnSms\Gateway\CellsyntGateway;
 use AnSms\Gateway\FortySixElksGateway;
