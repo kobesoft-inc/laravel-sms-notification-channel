@@ -41,11 +41,13 @@ class RakutenGateway implements GatewayInterface
             ],
         ];
 
+        $jsonPayload = json_encode($payload, JSON_UNESCAPED_UNICODE);
+
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-        ])->post($this->smsUrl, $payload);
+        ])->withBody($jsonPayload, 'application/json')->post($this->smsUrl);
 
         if ($response->failed()) {
             throw new SendException("Rakuten SMS sending failed: " . $response->body());
