@@ -32,6 +32,7 @@ class RakutenGateway implements GatewayInterface
         $from = preg_replace('/^\+?81/', '0', $message->getFrom());
         $from = preg_replace('/[^0-9]/', '', $from);
         $to = preg_replace('/[^0-9]/', '', $message->getTo());
+        dd($message->getText());
         $payload = [
             'from' => $from,
             'to' => $to,
