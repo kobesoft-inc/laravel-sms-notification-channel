@@ -27,7 +27,7 @@ class RakutenGateway implements GatewayInterface
      * @throws SendException
      */
     public function sendMessage(MessageInterface $message): void
-    {
+    {   
         $token = $this->getAccessToken();
         $from = preg_replace('/^\+?81/', '0', $message->getFrom());
         $from = preg_replace('/[^0-9]/', '', $from);
@@ -35,20 +35,17 @@ class RakutenGateway implements GatewayInterface
         $payload = [
             'from' => $from,
             'to' => $to,
-            'message_type' => 'text',
-            'text_message' => [
+            'message_type' => 'unicode',
+            'unicode_message' => [
                 'text' => $message->getText(),
             ],
         ];
 
-        $jsonPayload = json_encode($payload, JSON_UNESCAPED_UNICODE);
-
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-        ])->withBody($jsonPayload, 'application/json')->post($this->smsUrl);
-
+            'Content-Type' => 'application/json; charset=utf-8',
+        ])->post($this->smsUrl, $payload);
         if ($response->failed()) {
             throw new SendException("Rakuten SMS sending failed: " . $response->body());
         }
