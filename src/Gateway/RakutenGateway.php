@@ -10,6 +10,7 @@ use AnSms\Message\DeliveryReport\DeliveryReport;
 use AnSms\Message\DeliveryReport\DeliveryReportInterface;
 use AnSms\Exception\SendException;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class RakutenGateway implements GatewayInterface
 {
@@ -42,7 +43,8 @@ class RakutenGateway implements GatewayInterface
         ];
 
         $jsonPayload = json_encode($payload, JSON_UNESCAPED_UNICODE);
-
+        Log::info('SMS Final Message:', ['text' => $jsonPayload]);
+        
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
