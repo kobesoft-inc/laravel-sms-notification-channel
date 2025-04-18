@@ -1,7 +1,7 @@
 ## Original Author
 Andreas Nilsson (https://github.com/andreasnij)
 
-##feature
+## Feature
 Added gateway for rakuten
 - [Rakuten](https://www.rakuten.com) 
 
