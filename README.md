@@ -2,7 +2,7 @@
 Andreas Nilsson (https://github.com/andreasnij)
 
 ## Feature
-Added gateway for rakuten
+Added gateway for rakuten Cpaas SMS API
 - [Rakuten](https://www.rakuten.com) 
 
 ## License
